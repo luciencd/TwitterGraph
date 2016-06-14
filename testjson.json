@@ -1,0 +1,93 @@
+{"search":
+  {"results":4915,"current":15},
+"tweets":[
+{"cde":
+  {"author":
+    {"gender":
+      "unknown",
+      "parenthood":
+        {"isParent":"unknown","evidence":""}
+      ,"location":{"country":"","city":"","state":""}
+      ,"maritalStatus":{"isMarried":"unknown","evidence":""}
+    }
+  ,"content":
+    {"sentiment":
+      {"evidence":[],"polarity":"NEUTRAL"}
+    }
+  }
+,"cdeInternal":
+  {"tracks":
+    [{"id":"2713720a-f341-4ca0-acd1-f8b1e6c0d00f"}]
+  }
+,"message":
+  {
+    "postedTime":"2014-04-14T18:17:21.000Z"
+    ,"verb":"post"
+    ,"link":"http://twitter.com/DeidreZune/statuses/455771808386387969"
+    ,"generator":
+      {"displayName":"web"
+        ,"link":"http://twitter.com"
+      }
+    ,"body":"So $GOOGL - $GOOG = $ 11 today. \n\nYep, as indexers sel $GOOG and buy $GOOGL, u have a paired trade right there"
+    ,"favoritesCount":0
+    ,"objectType":"activity"
+    ,"actor":
+      {"summary":"Global capital markets, macroeconomics and international relations. Entrepreneur. Imagine. Act. Soar."
+        ,"image":"https://pbs.twimg.com/profile_images/2255580137/DZ2_normal.jpg"
+        ,"statusesCount":17224
+        ,"utcOffset":"-25200"
+        ,"languages":["en"]
+        ,"preferredUsername":"DeidreZune"
+        ,"displayName":"DeidreZune"
+        ,"postedTime":"2011-10-06T03:29:09.000Z"
+        ,"link":"http://www.twitter.com/DeidreZune"
+        ,"verified":false
+        ,"friendsCount":52
+        ,"twitterTimeZone":"Pacific Time (US & Canada)"
+        ,"favoritesCount":27
+        ,"listedCount":44
+        ,"objectType":"person"
+        ,"links":
+        [{"rel":"me","href":null}]
+        ,"location":
+          {"displayName":"Here, There & Everywhere."
+          ,"objectType":"place"
+          }
+        ,"id":
+          "id:twitter.com:385779209"
+        ,"followersCount":1023
+      }
+    ,"provider":
+    {"displayName":"Twitter"
+      ,"link":"http://www.twitter.com"
+      ,"objectType":"service"
+    }
+    ,"twitter_filter_level":"medium"
+    ,"twitter_entities":
+    {
+      "urls":[]
+      ,"hashtags":[]
+      ,"user_mentions":[]
+      ,"symbols":
+      [
+        {"indices":[3,9],"text":"GOOGL"}
+        ,{"indices":[12,17],"text":"GOOG"}
+        ,{"indices":[55,60],"text":"GOOG"}
+        ,{"indices":[69,75],"text":"GOOGL"}
+      ]
+    }
+    ,"twitter_lang":"en"
+    ,"id":"tag:search.twitter.com,2005:455771808386387969"
+    ,"retweetCount":0
+    ,"gnip":
+      {"language":{"value":"en"}}
+    ,"object":
+    {"summary":"So $GOOGL - $GOOG = $ 11 today. \n\nYep, as indexers sel $GOOG and buy $GOOGL, u have a paired trade right there"
+      ,"postedTime":"2014-04-14T18:17:21.000Z"
+      ,"link":"http://twitter.com/DeidreZune/statuses/455771808386387969"
+      ,"id":"object:search.twitter.com,2005:455771808386387969"
+      ,"objectType":"note"
+    }
+  }
+},
+{"cde":{"author":{"gender":"unknown","parenthood":{"isParent":"unknown","evidence":""},"location":{},"maritalStatus":{"isMarried":"unknown","evidence":""}},"content":{"sentiment":{"evidence":[{"polarity":"NEGATIVE","sentimentTerm":"Shocking"},{"polarity":"POSITIVE","sentimentTerm":"good"}],"polarity":"AMBIVALENT"}}},"cdeInternal":{"tracks":[{"id":"2713720a-f341-4ca0-acd1-f8b1e6c0d00f"}]},"message":{"postedTime":"2014-04-

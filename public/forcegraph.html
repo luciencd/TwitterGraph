@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <title>NodeJS Starter Application</title>
+  <script src="./Resources/jqueryui/external/jquery/jquery.js"></script>
+  <script src="./Resources/jqueryui/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <style>
+  text {
+    font-size:8pt;
+
+  }
+  body {
+    position:fixed;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+  }
+  .node {
+    /*stroke: #fff;*/
+    stroke-width: 1.5px;
+  }
+
+  .link {
+    /*stroke: #999;*/
+    stroke-opacity: .6;
+  }
+  div.network {
+    margin: 0 auto;
+    width:100%;
+    height:100%;
+    overflow: auto;
+  }
+  #element::-webkit-scrollbar {
+    display: none;
+  }
+
+  input.twitterInput {
+    margin-bottom:10px;
+  }
+
+  </style>
+</head>
+
+<body>
+
+    <div class = "middle">
+      <h1 class = "stocksquaretitle"><div style="color:white;">Twitter Sentiment</div></h1>
+
+      <input class = "twitterInput" id="maininput">
+
+    </div>
+    <div class = "network">
+    </div>
+</body>
+
+<script>
+
+var url = "https://cdeservice.mybluemix.net:443/api/v1/messages/search";
+var securl ="https://ed8cfdc5-f3d0-4c0e-a235-1abb6879ba51:f1EB5sW37M@cdeservice.mybluemix.net/api/v1/messages/search";
+var inputBar = document.getElementById("maininput");
+var outputlist = document.getElementById("outputlist");
+
+inputBar.addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+
+        //validate(e);
+        getTweetsSentiment(inputBar.value);
+    }
+});
+/*
+Return value from -1 to 1. based on the sentiment of tweets involving the stock name and
+buy/sell.
+*/
+
+/*
+Use ajax function to get json data from python file.
+send in data relating to cutoff tweets (top n percent or how many tweets, later).
+*/
+function getTweetsSentiment(stock){
+  newurl = "http://flasktest.w3ibm.mybluemix.net/analyze?keyword="+stock+"&num=100";
+  alert(newurl);
+
+  $.ajax({
+    'url':newurl,
+    'type':'GET',
+    'success' : function(data){
+      alert("data");
+      alert(data);
+      return data;
+    }
+  });
+}
+
+function validate(e) {
+    var text = inputBar.value;
+    var outputlist = document.getElementById("outputlist");
+    outputlist.innerHTML = text;
+    alert(inputBar.value);
+    //alert("validataed");
+    //validation of the input...
+}
+
+$(function() {
+      $('a#calculate').bind('click', function() {
+        $.getJSON('/analyze', {
+          a: $('input[keyword="apple"]').val(),
+          b: $('input[num="100"]').val()
+        }, function(data) {
+          $("#result").text(data.result);
+        });
+        return false;
+      });
+    });
+
+
+</script>
+
+
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+
+var width = 2000,
+    height = 2000;
+
+var color = d3.scale.category20();
+var dampcolors = ['#fc0200', '#f90500', '#f70700', '#f40a00', '#f20c00', '#ef0f00', '#ed1100', '#ea1400', '#e81600', '#e51900', '#e21c00', '#e01e00', '#dd2100', '#db2300', '#d82600', '#d62800', '#d32b00', '#d12d00', '#ce3000', '#cc3300', '#c93500', '#c63800', '#c43a00', '#c13d00', '#bf3f00', '#bc4200', '#ba4400', '#b74700', '#b54900', '#b24c00', '#af4f00', '#ad5100', '#aa5400', '#a85600', '#a55900', '#a35b00', '#a05e00', '#9e6000', '#9b6300', '#996600', '#966800', '#936b00', '#916d00', '#8e7000', '#8c7200', '#897500', '#877700', '#847a00', '#827c00', '#7f7f00', '#7c8200', '#7a8400', '#778700', '#758900', '#728c00', '#708e00', '#6d9100', '#6b9300', '#689600', '#669900', '#639b00', '#609e00', '#5ea000', '#5ba300', '#59a500', '#56a800', '#54aa00', '#51ad00', '#4faf00', '#4cb200', '#49b500', '#47b700', '#44ba00', '#42bc00', '#3fbf00', '#3dc100', '#3ac400', '#38c600', '#35c900', '#33cc00', '#30ce00', '#2dd100', '#2bd300', '#28d600', '#26d800', '#23db00', '#21dd00', '#1ee000', '#1ce200', '#19e500', '#16e800', '#14ea00', '#11ed00', '#0fef00', '#0cf200', '#0af400', '#07f700', '#05f900', '#02fc00', '#00ff00'];
+var brightcolors = ['#e50904', '#e51309', '#e51c0d', '#e52612', '#e53416', '#e53c1b', '#e54520', '#e54d24', '#e55529', '#e5612d', '#e56932', '#e57037', '#e5773b', '#e57e40', '#e58844', '#e58f49', '#e5954e', '#e59b52', '#e5a057', '#e5a95b', '#e5ae60', '#e5b364', '#e5b869', '#e5bc6e', '#e5c372', '#e5c777', '#e5cb7b', '#e5ce80', '#e5d285', '#e5d789', '#e5da8e', '#e5dc92', '#e5df97', '#e5e19c', '#e5e4a0', '#e4e5a5', '#e3e5a9', '#e2e5ae', '#e1e5b3', '#dfe5b7', '#dfe5bc', '#dfe5c0', '#dfe5c5', '#dfe5c9', '#dfe5ce', '#e0e5d3', '#e1e5d7', '#e2e5dc', '#e3e5e0', '#e5e5e5', '#e3e5e0', '#e1e5dc', '#dee5d7', '#dce5d3', '#d8e5ce', '#d5e5c9', '#d2e5c5', '#cee5c0', '#cae5bc', '#c5e5b7', '#c1e5b3', '#bce5ae', '#b7e5a9', '#b2e5a5', '#abe5a0', '#a6e59c', '#a0e597', '#9ae592', '#94e58e', '#8be589', '#85e585', '#80e582', '#7be580', '#77e57f', '#72e580', '#6ee57f', '#69e57d', '#64e57d', '#60e57c', '#5be57f', '#57e57f', '#52e57f', '#4ee57f', '#49e580', '#44e585', '#40e586', '#3be587', '#37e589', '#32e58a', '#2de591', '#29e593', '#24e596', '#20e598', '#1be59b', '#16e5a3', '#12e5a7', '#0de5ab', '#09e5af', '#04e5b3', '#00e5bc'];
+var nosat = ['#e50500', '#e50a00', '#e51000', '#e51500', '#e52000', '#e52500', '#e52b00', '#e53000', '#e53600', '#e54000', '#e54600', '#e54b00', '#e55100', '#e55600', '#e56100', '#e56600', '#e56c00', '#e57100', '#e57600', '#e58100', '#e58700', '#e58c00', '#e59100', '#e59700', '#e5a200', '#e5a700', '#e5ac00', '#e5b200', '#e5b700', '#e5c200', '#e5c700', '#e5cd00', '#e5d200', '#e5d800', '#e5e200', '#e2e500', '#dde500', '#d8e500', '#d2e500', '#c7e500', '#c2e500', '#bde500', '#b7e500', '#b2e500', '#a7e500', '#a2e500', '#9ce500', '#97e500', '#91e500', '#87e500', '#81e500', '#7ce500', '#76e500', '#71e500', '#66e500', '#61e500', '#5be500', '#56e500', '#50e500', '#46e500', '#40e500', '#3be500', '#36e500', '#30e500', '#25e500', '#20e500', '#1be500', '#15e500', '#10e500', '#05e500', '#00e500', '#00e505', '#00e50a', '#00e510', '#00e51b', '#00e520', '#00e525', '#00e52b', '#00e530', '#00e53b', '#00e540', '#00e546', '#00e54b', '#00e551', '#00e55b', '#00e561', '#00e566', '#00e56c', '#00e571', '#00e57c', '#00e581', '#00e587', '#00e58c', '#00e591', '#00e59c', '#00e5a2', '#00e5a7', '#00e5ac', '#00e5b2', '#00e5bc'];
+var nosat101 = ['#e50000', '#e50500', '#e50a00', '#e51000', '#e51500', '#e52000', '#e52500', '#e52b00', '#e53000', '#e53600', '#e54000', '#e54600', '#e54b00', '#e55100', '#e55600', '#e56100', '#e56600', '#e56c00', '#e57100', '#e57600', '#e58100', '#e58700', '#e58c00', '#e59100', '#e59700', '#e5a200', '#e5a700', '#e5ac00', '#e5b200', '#e5b700', '#e5c200', '#e5c700', '#e5cd00', '#e5d200', '#e5d800', '#e5e200', '#e2e500', '#dde500', '#d8e500', '#d2e500', '#c7e500', '#c2e500', '#bde500', '#b7e500', '#b2e500', '#a7e500', '#a2e500', '#9ce500', '#97e500', '#91e500', '#87e500', '#81e500', '#7ce500', '#76e500', '#71e500', '#66e500', '#61e500', '#5be500', '#56e500', '#50e500', '#46e500', '#40e500', '#3be500', '#36e500', '#30e500', '#25e500', '#20e500', '#1be500', '#15e500', '#10e500', '#05e500', '#00e500', '#00e505', '#00e50a', '#00e510', '#00e51b', '#00e520', '#00e525', '#00e52b', '#00e530', '#00e53b', '#00e540', '#00e546', '#00e54b', '#00e551', '#00e55b', '#00e561', '#00e566', '#00e56c', '#00e571', '#00e57c', '#00e581', '#00e587', '#00e58c', '#00e591', '#00e59c', '#00e5a2', '#00e5a7', '#00e5ac', '#00e5b2', '#00e5bc'];
+var greennosat = ['#e50000', '#e50500', '#e50a00', '#e51000', '#e51500', '#e51b00', '#e52000', '#e52500', '#e52b00', '#e53000', '#e53600', '#e53b00', '#e54000', '#e54600', '#e54b00', '#e55100', '#e55600', '#e55b00', '#e56100', '#e56600', '#e56c00', '#e57100', '#e57600', '#e57c00', '#e58100', '#e58700', '#e58c00', '#e59100', '#e59700', '#e59c00', '#e5a200', '#e5a700', '#e5ac00', '#e5b200', '#e5b700', '#e5bd00', '#e5c200', '#e5c700', '#e5cd00', '#e5d200', '#e5d800', '#e5dd00', '#e5e200', '#e2e500', '#dde500', '#d8e500', '#d2e500', '#cde500', '#c7e500', '#c2e500', '#bde500', '#b7e500', '#b2e500', '#ace500', '#a7e500', '#a2e500', '#9ce500', '#97e500', '#91e500', '#8ce500', '#87e500', '#81e500', '#7ce500', '#76e500', '#71e500', '#6ce500', '#66e500', '#61e500', '#5be500', '#56e500', '#50e500', '#4be500', '#46e500', '#40e500', '#3be500', '#36e500', '#30e500', '#2be500', '#25e500', '#20e500', '#1be500', '#15e500', '#10e500', '#0ae500', '#05e500', '#00e500', '#00e505', '#00e50a', '#00e510', '#00e515', '#00e51b', '#00e520', '#00e525', '#00e52b', '#00e530', '#00e536', '#00e53b', '#00e540', '#00e546', '#00e54b', '#00e551'];
+//Display legend of colors,
+
+//Display what nodes and edges do.
+
+//Only display the top n% of tweet names, if you mouse over it should reveal.
+
+var force = d3.layout.force()
+    .charge(-120)
+    .linkDistance(140)
+    .size([width, height]);
+
+
+
+var svg = d3.select(".network").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("/jsondata/data.json", function(error, graph) {
+  if (error) throw error;
+
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+  /*normalization factors*/
+  var maxmass = d3.max(graph.nodes,function(d) {return d.mass;});
+  var maxthick = d3.max(graph.links,function(d) {return d.value;});
+  //alert(maxmass+" "+maxthick);
+  var maxlinkssentiment = d3.max(graph.links,function(d) {return d.sentiment;});
+  var minlinkssentiment = d3.min(graph.links,function(d) {return d.sentiment;});
+  var averagelinkssentiment = d3.mean(graph.links,function(d) {return d.sentiment;});
+
+  var maxbubblesentiment = d3.max(graph.nodes,function(d) {return d.sentiment;});
+  var minbubblesentiment = d3.min(graph.nodes,function(d) {return d.sentiment;});
+  var averagebubblesentiment = d3.mean(graph.nodes,function(d) {return d.sentiment;});
+
+
+  var r = d3.scale.pow(1/4).domain([2,maxmass]).range([1, 40]);
+  var thickness = d3.scale.pow(1/4).domain([2,maxthick]).range([1, 30]);
+  var sentiment=d3.scale.quantize().domain([0,100]).range(greennosat);
+  /*
+  alert(averagelinkssentiment);
+  alert("minimumadj"+(minlinkssentiment-averagelinkssentiment+50));
+  alert("maximumadj"+(maxlinkssentiment-averagelinkssentiment+50));
+  alert("average"+(averagelinkssentiment))
+  alert(sentiment(10)+sentiment(20)+sentiment(30)+sentiment(40)+sentiment(50)+sentiment(60)+sentiment(70)+sentiment(80)+sentiment(90)+sentiment(100));
+  */
+  var link = svg.selectAll(".link")
+      .data(graph.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .style("stroke",function(d) { return sentiment(Math.max(1,Math.min(99,d.sentiment-averagebubblesentiment+50))); })
+      .style("stroke-width", function(d) { return thickness(d.value); });
+
+  var node = svg.selectAll(".node")
+      .data(graph.nodes);
+
+
+
+  var elemEnter = node.enter()
+    .append("g")
+    .attr("transform",function(d) { return "translate("+d.x+","+d.y+")"; });
+
+  var circle = elemEnter.append("circle")
+      .attr("class", "node")
+      .attr("r", function(d) { return r(d.weight); })//find how to normalize
+      .attr("stroke",function(d) { /*alert(Math.max(0,Math.min(99,d.sentiment-averagebubblesentiment+50)));*/return sentiment(Math.max(1,Math.min(99,d.sentiment-averagebubblesentiment+50))); })
+      .style("fill",function(d) { /*alert(Math.max(0,Math.min(99,d.sentiment-averagebubblesentiment+50)));*/return sentiment(Math.max(1,Math.min(99,d.sentiment-averagebubblesentiment+50))); })
+      //.style("fill", function(d) { return color(d.group); })
+      .call(force.drag);
+
+  elemEnter.append("text")
+      .attr("dx", function(d){return d.radius;})
+      .attr("dy", function(d){return d.radius;})
+      .attr("r",function(d){return d.radius;})
+      .text(function(d) { return d.name; })
+      .style('fill', 'white');
+
+
+  force.on("tick", function(e) {
+    /*
+    var q = d3.geom.quadtree(node),
+        i = 0,
+        n = node.length;
+
+    while (++i < n) q.visit(collide(node[i]));
+    */
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("transform", function(d) { return "translate("+d.x+","+d.y+")"; });
+        //.attr("cy", function(d) { return d.y; });
+  });
+
+  function collide(node) {
+    var r = node.radius + 16,
+        nx1 = node.x - r,
+        nx2 = node.x + r,
+        ny1 = node.y - r,
+        ny2 = node.y + r;
+    return function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== node)) {
+        var x = node.x - quad.point.x,
+            y = node.y - quad.point.y,
+            l = Math.sqrt(x * x + y * y),
+            r = node.radius + quad.point.radius;
+        if (l < r) {
+          l = (l - r) / l * .5;
+          node.x -= x *= l;
+          node.y -= y *= l;
+          quad.point.x += x;
+          quad.point.y += y;
+        }
+      }
+      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+    };
+  }
+});
+
+</script>

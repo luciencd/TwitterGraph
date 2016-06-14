@@ -1,0 +1,49 @@
+body {
+  background-color: #3b4b54;
+}
+
+div.middle{
+      margin: 0 auto;
+}
+div.sentimentstock {
+  text-align:center;
+  background-color:inherit;
+  color:white;
+    /*border: 1px solid white;
+    border-radius:3px;*/
+  width:200px;
+  /*height:20px;*/
+}
+div.stockdetails {
+  width:100%;
+  border: 1px solid white;
+  border-radius:3px;
+  vertical-align:middle;
+}
+span.name {
+
+}
+span.cost {
+  color:lightgreen;
+}
+span.percentage{
+  color:lightgreen;
+}
+div.pumpordump {
+
+  border: 1px solid white;
+  border-radius:3px;
+  color:black;
+  width:200px;
+  height:200px;
+  margin: 0 auto;
+  background-color:green;
+  position:relative;
+  display:table;
+
+}
+span.choice{
+  display:table-cell;
+  vertical-align: middle;
+
+}
