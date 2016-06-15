@@ -3,6 +3,6 @@ applications:
   memory: 256M
   instances: 1
   domain: w3ibm.mybluemix.net
-  name: Stock Squares
-  host: stock-squares
+  name: Twitter Graph
+  host: twittergraph
   disk_quota: 1024M

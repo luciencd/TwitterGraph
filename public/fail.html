@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+<script src="./Resources/jqueryui/external/jquery/jquery.js"></script>
+<script src="./Resources/jqueryui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+  <head>
+    <title>NodeJS Starter Application</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="stylesheets/style.css">
+  </head>
+
+  <body>
+    <table>
+      <div class = "middle">
+        <h1 class = "stocksquaretitle"><div style="color:green;">Stock </div><div style="color:red;">Squares</div></h1>
+
+        $<input class = "twitterInput" id="maininput">
+
+      </div>
+    </table>
+    <div class="outputlist" id = "outputlist">
+      aa
+    </div>
+  </body>
+
+</html>
+
+<script>
+
+var url = "https://cdeservice.mybluemix.net:443/api/v1/messages/search";
+var securl ="https://ed8cfdc5-f3d0-4c0e-a235-1abb6879ba51:f1EB5sW37M@cdeservice.mybluemix.net/api/v1/messages/search";
+var inputBar = document.getElementById("maininput");
+var outputlist = document.getElementById("outputlist");
+
+inputBar.addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+
+        //validate(e);
+        getTweetsSentiment(inputBar.value);
+    }
+});
+/*
+Return value from -1 to 1. based on the sentiment of tweets involving the stock name and
+buy/sell.
+*/
+function getTweetsSentiment(stock){
+  newurl = securl+"?q=%20"+stock+"%20buy&size=15";
+  alert(newurl);
+  $.ajax({
+    'url':newurl,
+    'type':'GET',
+    'success' : function(data){
+      alert("data");
+    }
+  });
+}
+function validate(e) {
+    var text = inputBar.value;
+    var outputlist = document.getElementById("outputlist");
+    outputlist.innerHTML = text;
+    alert(inputBar.value);
+    //alert("validataed");
+    //validation of the input...
+}
+
+
+
+</script>
