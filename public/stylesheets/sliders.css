@@ -1,17 +1,23 @@
 .numTweetsSlider {
   float:left;
+  left:50%;
   width:100%;
   margin-bottom:10px;
 }
 .numBubblesSlider {
   float:left;
+  left:50%;
   width:100%;
   margin-bottom:10px;
 }
 .delaySlider {
   float:left;
+  left:50%;
   width:100%;
   margin-bottom:10px;
+}
+div.sliders div input {
+  width:100%;
 }
 /*.numBubblesSlider {
   position: relative;

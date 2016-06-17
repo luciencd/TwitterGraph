@@ -1,8 +1,7 @@
 div.controls {
-  background-color:#808B96;
   position: absolute;
   right:10%;
-  opacity:0.5;
+
   top:100px;
   width:200px;
   min-height:400px;
@@ -11,7 +10,7 @@ div.controls {
 }
 div.buttons{
   padding:5px;
-  opacity:1.0;
+
 }
 div.minimize {
   background-color:#566573;
@@ -22,4 +21,38 @@ div.minicon {
   background-color:#ABB2B9;
   width:70%;
   height:50%;
+}
+div.mainfilter{
+  margin-bottom:10px;
+}
+div.nsfwfilter {
+  margin-bottom:10px;
+}
+div.keywords {
+  font-size:13pt;
+}
+div.keyword {
+  font-size:13pt;
+  color: white;
+  border-bottom: 1px solid black;
+  width:100%;
+  margin-bottom:5px
+}
+
+div.keywordInput {
+  width:100%;
+  font-size:13pt;
+  color: white;
+  border-bottom: 1px solid black;
+}
+input.keywordInput:focus {
+    outline:none;
+}
+input.keywordInput {
+	background-color: inherit;
+	border: 0px solid black;
+	border-bottom: 1px solid black;
+	width:100%;
+	font-size:13pt;
+	color: white;
 }

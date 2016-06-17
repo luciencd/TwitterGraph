@@ -4,8 +4,8 @@
 <head>
 
   <title>NodeJS Starter Application</title>
-  <script src="./Resources/jqueryui/external/jquery/jquery.js"></script>
-  <script src="./Resources/jqueryui/jquery-ui.min.js"></script>
+  <script src="resources/jquery-ui-1.12.0-rc.2/external/jquery/jquery.js"></script>
+  <script src="resources/jquery-ui-1.12.0-rc.2/jquery-ui.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -86,7 +86,14 @@
       </div>
 
       <div class = "keywords">
+        <div class = "keywordArray" id="keywordArray">
+          <!--<div class = "keyword">
+          </div>-->
+        </div>
 
+        <div class = "addKeyword">
+          <input class = "keywordInput" id="keywordInput">
+        </div>
       </div>
 
       <div class = "minimize">
@@ -98,6 +105,7 @@
     <div class = "network">
     </div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
 <script>
 
@@ -106,11 +114,12 @@ var securl ="https://ed8cfdc5-f3d0-4c0e-a235-1abb6879ba51:f1EB5sW37M@cdeservice.
 var inputBar = document.getElementById("maininput");
 var outputlist = document.getElementById("outputlist");
 
+
 /*
 User defined parts of the view, that users can choose
 */
-
-var termlist = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
+var customKeywordArray = [];
+//customKeywordArrray = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
 var delay = 60000;
 
 
@@ -141,6 +150,7 @@ function getNumBubbles(){
   return "30";
 }
 function getMain(){
+
   return "True";
 }
 function getNsfw(){
@@ -150,12 +160,37 @@ update();
 
 //Setting interval so that we get an update from the model
 var myVar = setInterval(update, delay);
+function getArrayTerm(){
+  return customKeywordArray[index];
+}
+
+function incrementIndex(){
+  index = (index+1)%customKeywordArray.length;
+}
+
 function update(){
-  document.getElementById("maininput").value = termlist[index];
-  getTweetsSentiment(function(d){
-    generate(d);
-  });
-  index = (index+1)%termlist.length;
+  var term = "";
+
+  if(customKeywordArray.length == 0){
+     term = getTerm();
+  }else{
+     term = getArrayTerm();
+  }
+
+
+  if(term != ""){
+    document.getElementById("maininput").value = term;
+    getTweetsSentiment(function(d){
+      generate(d);
+    });
+    incrementIndex();
+  }else{
+
+  }
+
+
+
+
 
 }
 /*
@@ -185,7 +220,7 @@ call the Model for data belonging to that.
 inputBar.addEventListener("keydown", function (e) {
     if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
         var term = getTerm();
-        getTweetsSentiment(function(d,term){
+        getTweetsSentiment(function(d){
           generate(d);
         });
     }
@@ -257,6 +292,57 @@ function createSlider(name,min,max){
 
 </script>
 
+<script>
+/*
+maintaining the array of keywords in the control panel.
+*/
+
+var outputBar = document.getElementById("keywordInput");
+var keywordArray = document.getElementById("keywordArray");
+//var customKeywordArray = [];
+
+function createKeyword(keyword){
+  var html = '<div class = "keyword">'+keyword+'</div>';
+  return html;
+}
+/*
+When you press enter, it will check whatever is in the inputbar, and
+call the Model for data belonging to that.
+*/
+outputBar.addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+
+
+        //Can't already be in the array.
+        var keyword = outputBar.value;
+        if($.inArray(keyword, customKeywordArray) == -1){
+
+          var htmlKeyword = createKeyword(keyword);
+
+          $("#keywordArray").append(htmlKeyword);
+          customKeywordArray.push(keyword);
+          //perhaps this is a good idea.
+          index = customKeywordArray.length-1;
+          document.getElementById("maininput").value = getArrayTerm();
+          var term = getTerm();
+          getTweetsSentiment(function(d){
+            generate(d);
+          });
+        }
+
+    }
+});
+
+$(".keyword").on("click",function(){
+  alert("clicked");
+  var keyword = $(this).value;
+  customKeywordArray.remove(keyword);
+  $(this).remove();
+  update();
+});
+
+
+</script>
 
 
 <script>
