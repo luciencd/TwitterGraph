@@ -1,0 +1,23 @@
+div.controls {
+  background-color:#808B96;
+  position: absolute;
+  top:50px;
+  width:200px;
+  border-radius:0px 0px 10px 10px;
+
+
+}
+div.buttons{
+  padding:5px;
+}
+div.minimize {
+  background-color:#566573;
+  width:10%;
+}
+
+div.minicon {
+  background-color:#ABB2B9;
+  width:70%;
+  height:50%;
+
+}
