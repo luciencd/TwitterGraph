@@ -83,12 +83,18 @@ pre {
 div.middle {
 	text-align:center;
 	font-size:16pt;
+	position:absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
 }
 h1.stocksquaretitle {
 	text-align:center;
 }
-h1.stocksquaretitle div{
+h1.twitterTitle div{
 	display:inline;
+
 }
 input.twitterInput {
 	background-color: inherit;
@@ -100,5 +106,5 @@ input.twitterInput {
 }
 
 div.outputlist {
-	
+
 }

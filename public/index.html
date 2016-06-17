@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="stylesheets/style.css">
   <link rel="stylesheet" href="stylesheets/buttons.css">
   <link rel="stylesheet" href="stylesheets/controls.css">
+  <link rel="stylesheet" href="stylesheets/sliders.css">
   <style>
   text {
     font-size:8pt;
@@ -44,9 +45,10 @@
     display: none;
   }
 
+  /*
   input.twitterInput {
     margin-bottom:10px;
-  }
+  }*/
 
   </style>
 </head>
@@ -54,31 +56,44 @@
 <body>
 
     <div class = "middle">
-      <h1 class = "stocksquaretitle"><div style="color:white;">Twitter Sentiment</div></h1>
+      <h1 class = "twitterTitle"><div style="color:white;">Twitter Sentiment</div></h1>
 
       <input class = "twitterInput" id="maininput">
 
     </div>
     <div class = "controls">
       <div class = "buttons">
-        <div class = "cycle">
-          <input type="checkbox" name="filter" value="cycle">cycle
-        </div>
+
         <div class = "mainfilter">
           <input type="checkbox" name="filter" value="main">single graph
         </div>
         <div class = "nsfwfilter">
           <input type="checkbox" name="filter" value="nsfw">nsfw filter
         </div>
-
-        <div class = "numberfilter">
-          <div class="num-bubble-label">100 Tweets</div>
-        </div><!-- add d3 slider-->
       </div>
+
+      <div class = "sliders">
+        <div class = "numTweetsSlider">
+          <input type="range" min="1" max="10000" id="numTweetsInput">
+
+        </div>
+        <div class = "numBubblesSlider">
+          <input type="range" min="1" max="500" id="numBubblesInput">
+        </div>
+        <div class = "delaySlider">
+          <input type="range" min="10" max="1000" id="delayInput">
+        </div>
+      </div>
+
+      <div class = "keywords">
+
+      </div>
+
       <div class = "minimize">
         <div class = "minicon">
         </div>
       </div>
+
     </div>
     <div class = "network">
     </div>
@@ -91,30 +106,57 @@ var securl ="https://ed8cfdc5-f3d0-4c0e-a235-1abb6879ba51:f1EB5sW37M@cdeservice.
 var inputBar = document.getElementById("maininput");
 var outputlist = document.getElementById("outputlist");
 
-var termlist = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
-var delay = 30000;
-var index = 0;
-var switching = true;
-var main = "True";
+/*
+User defined parts of the view, that users can choose
+*/
 
+var termlist = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
+var delay = 60000;
+
+
+
+
+
+//local variables used to change between states of the view.
+var index = 0;
+
+/*
+User defined parts of the view that get passed in
+through GET requests to the model
+
+number of tweets
+number of bubbles
+whether we want the biggest or multiple disjoint graphs
+do we want to filter bubbles with nsfw language?
+*/
+
+//Create a builder class with the url and get requests.
 function getTerm(){
-  if(switching){
-    term = termlist[index];
-  } else {
-    term = inputBar.value;
-  }
-  return term;
+  return document.getElementById("maininput").value;
+}
+function getNumTweets(){
+  return "1000";
+}
+function getNumBubbles(){
+  return "30";
+}
+function getMain(){
+  return "True";
+}
+function getNsfw(){
+  return "False";
 }
 update();
+
+//Setting interval so that we get an update from the model
 var myVar = setInterval(update, delay);
 function update(){
-
+  document.getElementById("maininput").value = termlist[index];
   getTweetsSentiment(function(d){
     generate(d);
   });
   index = (index+1)%termlist.length;
-  //alert(index+" "+term);
-  //myVar = setInterval(update, 5000);
+
 }
 /*
 Use ajax function to get json data from python file.
@@ -122,7 +164,7 @@ send in data relating to cutoff tweets (top n percent or how many tweets, later)
 */
 function getTweetsSentiment(callback){
 
-  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword="+getTerm()+"&num=1000"+"&main="+main;
+  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword="+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
   document.getElementById("maininput").value = getTerm();
   //Get a cache going, that only updates after
   $.ajax({
@@ -136,7 +178,10 @@ function getTweetsSentiment(callback){
   });
 }
 
-
+/*
+When you press enter, it will check whatever is in the inputbar, and
+call the Model for data belonging to that.
+*/
 inputBar.addEventListener("keydown", function (e) {
     if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
         var term = getTerm();
@@ -145,42 +190,79 @@ inputBar.addEventListener("keydown", function (e) {
         });
     }
 });
-/*
-Return value from -1 to 1. based on the sentiment of tweets involving the stock name and
-buy/sell.
-*/
 
-
-
-
-function validate(e) {
-    var text = inputBar.value;
-    var outputlist = document.getElementById("outputlist");
-    outputlist.innerHTML = text;
-    //alert(inputBar.value);
-    //alert("validataed");
-    //validation of the input...
-}
-
-$(function() {
-      $('a#calculate').bind('click', function() {
-        $.getJSON('/analyze', {
-          a: $('input[keyword="apple"]').val(),
-          b: $('input[num="100"]').val()
-        }, function(data) {
-          $("#result").text(data.result);
-        });
-        return false;
-      });
-    });
 
 
 </script>
 
 
-
 <script src="http://d3js.org/d3.v3.js"></script>
+
+
 <script>
+/*
+
+Sliders
+
+*/
+
+var minBubbles = 1;
+var maxBubbles = 500;
+
+var minTweets = 1;
+var maxTweets = 10000;
+
+var minDelay = 10;
+var maxDelay = 10000;
+
+/*createSlider(".numTweetsSlider",minBubbles,maxBubbles);
+createSlider(".numBubblesSlider",minTweets,maxTweets);
+createSlider(".delaySlider",minDelay,maxDelay);
+
+function createSlider(name,min,max){
+  var x = d3.scale.linear()
+      .domain([1, 100])
+      .range([min, max])
+      .clamp(true);
+
+  var dispatch = d3.dispatch(name+" sliderChange");
+
+  var slider = d3.select(name)
+      .style("width", width + "px");
+
+  var sliderTray = slider.append("div")
+      .attr("class", "slider-tray");
+
+  var sliderHandle = slider.append("div")
+      .attr("class", "slider-handle");
+
+  sliderHandle.append("div")
+      .attr("class", "slider-handle-icon")
+
+  slider.call(d3.behavior.drag()
+      .on("dragstart", function() {
+        dispatch.sliderChange(x.invert(d3.mouse(sliderTray.node())[0]));
+        d3.event.sourceEvent.preventDefault();
+      })
+      .on("drag", function() {
+        dispatch.sliderChange(x.invert(d3.mouse(sliderTray.node())[0]));
+      }));
+
+  dispatch.on(name+" sliderChange.slider", function(value) {
+    sliderHandle.style("left", x(value) + "px")
+  });
+}
+
+*/
+
+</script>
+
+
+
+<script>
+/*
+D3 DATA VISUALIZATION
+*/
 
 var width = 2000,
     height = 2000;

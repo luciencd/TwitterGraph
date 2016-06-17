@@ -1,14 +1,17 @@
 div.controls {
   background-color:#808B96;
   position: absolute;
-  top:50px;
+  right:10%;
+  opacity:0.5;
+  top:100px;
   width:200px;
-  border-radius:0px 0px 10px 10px;
-
-
+  min-height:400px;
+  overflow:hidden;
+  border-radius:10px 10px 10px 10px;
 }
 div.buttons{
   padding:5px;
+  opacity:1.0;
 }
 div.minimize {
   background-color:#566573;
@@ -19,5 +22,4 @@ div.minicon {
   background-color:#ABB2B9;
   width:70%;
   height:50%;
-
 }
