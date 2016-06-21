@@ -1,23 +1,62 @@
-.numTweetsSlider {
-  float:left;
-  left:50%;
-  width:100%;
-  margin-bottom:10px;
-}
-.numBubblesSlider {
-  float:left;
-  left:50%;
-  width:100%;
-  margin-bottom:10px;
-}
-.delaySlider {
-  float:left;
-  left:50%;
-  width:100%;
-  margin-bottom:10px;
-}
+
 div.sliders div input {
   width:100%;
+}
+
+div.sliders {
+  /*width:70%;*/
+  padding:10px;
+}
+.numTweetsSlider {
+  position: relative;
+  float: left;
+  width:100%;
+  margin-bottom:20px;
+  height:20px;
+}
+.numBubblesSlider {
+  position: relative;
+  float: left;
+  width:100%;
+  margin-bottom:20px;
+  height:20px;
+}
+.delaySlider {
+  position: relative;
+  float: left;
+  width:100%;
+  margin-bottom:20px;
+  height:20px;
+}
+.slider-tray {
+  position: absolute;
+  width:100%;
+  height: 6px;
+  border: solid 1px #ccc;
+  border-top-color: #aaa;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.slider-text {
+  margin-top:10px;
+  text-align:center;
+}
+.slider-handle {
+  position: absolute;
+  top: 3px;
+}
+
+.slider-handle-icon {
+  width: 14px;
+  height: 14px;
+  border: solid 1px #aaa;
+  position: absolute;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  top: -7px;
+  left: -7px;
 }
 /*.numBubblesSlider {
   position: relative;

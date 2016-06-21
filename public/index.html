@@ -7,6 +7,7 @@
   <script src="resources/jquery-ui-1.12.0-rc.2/external/jquery/jquery.js"></script>
   <script src="resources/jquery-ui-1.12.0-rc.2/jquery-ui.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+  <script src="http://d3js.org/d3.v3.js"></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -74,14 +75,14 @@
 
       <div class = "sliders">
         <div class = "numTweetsSlider">
-          <input type="range" min="1" max="10000" id="numTweetsInput">
-
+          <!--<input type="range" min="1" max="10000" id="numTweetsInput">
+          -->
         </div>
         <div class = "numBubblesSlider">
-          <input type="range" min="1" max="500" id="numBubblesInput">
+          <!--<input type="range" min="1" max="500" id="numBubblesInput">-->
         </div>
         <div class = "delaySlider">
-          <input type="range" min="10" max="1000" id="delayInput">
+          <!--<input type="range" min="10" max="1000" id="delayInput">-->
         </div>
       </div>
 
@@ -106,6 +107,100 @@
     </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+/*
+
+Sliders
+
+*/
+
+var minBubbles = 1;
+var maxBubbles = 250;
+var numBubbles = 1;
+
+var minTweets = 1;
+var maxTweets = 10000;
+var numTweets = 1;
+
+var minDelay = 10;
+var maxDelay = 10000;
+var numDelay = 60;
+var width = 150;
+//Find out way to get width from css
+
+createSlider(".numTweetsSlider","Tweets",minTweets,maxTweets);
+createSlider(".numBubblesSlider","Bubbles",minBubbles,maxBubbles);
+createSlider(".delaySlider","Delay",minDelay,maxDelay);
+
+function createSlider(name,display,min,max){
+  var legend = d3.format("0r");
+  var x = d3.scale.linear()
+          .domain([min, max])
+          .range([0, width])
+          .clamp(true);
+
+  var dispatch = d3.dispatch("sliderChange");
+
+  var slider = d3.select(name)
+      .style("width", width + "px");
+
+
+
+
+  var sliderTray = slider.append("div")
+      .attr("class", "slider-tray");
+
+  var sliderHandle = slider.append("div")
+      .attr("class", "slider-handle");
+  var sliderText = slider.append("div")
+      .attr("class", "slider-text");
+
+  sliderHandle.append("div")
+      .attr("class", "slider-handle-icon");
+
+  sliderText.append('text')
+      .text(min+" "+display);
+
+
+
+  slider.call(d3.behavior.drag()
+      .on("dragstart", function() {
+        //d3.mouse(sliderTray.node())[0] mouse pos x position
+        console.log("drag: "+value+" : "+x(value));
+        var value = x.invert(d3.mouse(sliderTray.node())[0]);
+        dispatch.sliderChange(value);
+        d3.event.sourceEvent.preventDefault();
+
+
+      })
+      .on("drag", function() {
+        dispatch.sliderChange(x.invert(d3.mouse(sliderTray.node())[0]));
+      }));
+
+  dispatch.on("sliderChange.slider", function(value) {
+    sliderHandle.style("left", x(value) + "px")
+    console.log("value: "+value+" : inverted"+x.invert(value)+"xed"+x(value));
+    brushed();
+  });
+
+  function brushed() {
+    var value = d3.round(x.invert(d3.mouse(sliderTray.node())[0]));
+    sliderText.select('text').text(value+" "+display);
+    if(name == ".numTweetsSlider"){
+      numTweets = value;
+    }else if(name == ".numBubblesSlider"){
+      numBubbles = value;
+    }else if(name == ".delaySlider"){
+      numDelay = value;
+    }
+  }
+
+
+}
+
+
+
+</script>
 
 <script>
 
@@ -119,7 +214,11 @@ var outputlist = document.getElementById("outputlist");
 User defined parts of the view, that users can choose
 */
 var customKeywordArray = [];
-//customKeywordArrray = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
+//What's happening in ibm
+//customKeywordArray = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
+//somers specifically?
+//customKeywordArray = ["ibm"]
+
 var delay = 60000;
 
 
@@ -144,11 +243,14 @@ function getTerm(){
   return document.getElementById("maininput").value;
 }
 function getNumTweets(){
-  return "2000";
+  //alert(numTweets);
+  return numTweets;
 }
 function getNumBubbles(){
-  return "30";
+  //alert(numBubbles);
+  return numBubbles;
 }
+
 function getMain(){
 
   return "True";
@@ -159,7 +261,8 @@ function getNsfw(){
 update();
 
 //Setting interval so that we get an update from the model
-var myVar = setInterval(update, delay);
+//use numDelay!
+var myVar = setInterval(update, numDelay*1000);
 function getArrayTerm(){
   return customKeywordArray[index];
 }
@@ -200,6 +303,7 @@ send in data relating to cutoff tweets (top n percent or how many tweets, later)
 function getTweetsSentiment(callback){
 
   newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword="+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
+
   document.getElementById("maininput").value = getTerm();
   //Get a cache going, that only updates after
   $.ajax({
@@ -231,66 +335,9 @@ inputBar.addEventListener("keydown", function (e) {
 </script>
 
 
-<script src="http://d3js.org/d3.v3.js"></script>
 
 
-<script>
-/*
 
-Sliders
-
-*/
-
-var minBubbles = 1;
-var maxBubbles = 500;
-
-var minTweets = 1;
-var maxTweets = 10000;
-
-var minDelay = 10;
-var maxDelay = 10000;
-
-/*createSlider(".numTweetsSlider",minBubbles,maxBubbles);
-createSlider(".numBubblesSlider",minTweets,maxTweets);
-createSlider(".delaySlider",minDelay,maxDelay);
-
-function createSlider(name,min,max){
-  var x = d3.scale.linear()
-      .domain([1, 100])
-      .range([min, max])
-      .clamp(true);
-
-  var dispatch = d3.dispatch(name+" sliderChange");
-
-  var slider = d3.select(name)
-      .style("width", width + "px");
-
-  var sliderTray = slider.append("div")
-      .attr("class", "slider-tray");
-
-  var sliderHandle = slider.append("div")
-      .attr("class", "slider-handle");
-
-  sliderHandle.append("div")
-      .attr("class", "slider-handle-icon")
-
-  slider.call(d3.behavior.drag()
-      .on("dragstart", function() {
-        dispatch.sliderChange(x.invert(d3.mouse(sliderTray.node())[0]));
-        d3.event.sourceEvent.preventDefault();
-      })
-      .on("drag", function() {
-        dispatch.sliderChange(x.invert(d3.mouse(sliderTray.node())[0]));
-      }));
-
-  dispatch.on(name+" sliderChange.slider", function(value) {
-    sliderHandle.style("left", x(value) + "px")
-  });
-}
-
-*/
-
-</script>
 
 <script>
 /*
@@ -408,7 +455,7 @@ function generate(graph) {
 
   var r = d3.scale.pow(1/4).domain([2,maxmass]).range([1, 40]);
   var thickness = d3.scale.pow(1/4).domain([2,maxthick]).range([1, 30]);
-  var sentiment=d3.scale.quantize().domain([0,100]).range(greennosat);
+  var sentiment = d3.scale.quantize().domain([0,100]).range(greennosat);
   /*
   alert(averagelinkssentiment);
   alert("minimumadj"+(minlinkssentiment-averagelinkssentiment+50));
