@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="stylesheets/buttons.css">
   <link rel="stylesheet" href="stylesheets/controls.css">
   <link rel="stylesheet" href="stylesheets/sliders.css">
+  <link rel="stylesheet" href="resources/font-awesome-4.6.3/css/font-awesome.min.css">
   <style>
   text {
     font-size:8pt;
@@ -57,49 +58,36 @@
 <body>
 
     <div class = "middle">
-      <h1 class = "twitterTitle"><div style="color:white;">Twitter Sentiment</div></h1>
+      <h3 class = "twitterTitle"><div style="color:white;">Twitter Sentiment</div></h1>
 
-      <input class = "twitterInput" id="maininput">
+      <input class = "twitterInput" id="maininput" value="IBM">
 
     </div>
+
     <div class = "controls">
-      <div class = "buttons">
 
-        <div class = "mainfilter">
-          <input type="checkbox" name="filter" value="main">single graph
+      <div class = "below">
+        <!--<div class = "minimizeTop">
+        </div>-->
+        <div class = "sliders">
+          <div class = "numTweetsSlider">
+          </div>
+          <div class = "numBubblesSlider">
+          </div>
+          <div class = "delaySlider">
+          </div>
         </div>
-        <div class = "nsfwfilter">
-          <input type="checkbox" name="filter" value="nsfw">nsfw filter
+        <div class = "keywords">
+          <div class = "keywordArray" id="keywordArray">
+          </div>
+          <div class = "addKeyword">
+            <input class = "keywordInput" id="keywordInput">
+          </div>
         </div>
       </div>
 
-      <div class = "sliders">
-        <div class = "numTweetsSlider">
-          <!--<input type="range" min="1" max="10000" id="numTweetsInput">
-          -->
-        </div>
-        <div class = "numBubblesSlider">
-          <!--<input type="range" min="1" max="500" id="numBubblesInput">-->
-        </div>
-        <div class = "delaySlider">
-          <!--<input type="range" min="10" max="1000" id="delayInput">-->
-        </div>
-      </div>
-
-      <div class = "keywords">
-        <div class = "keywordArray" id="keywordArray">
-          <!--<div class = "keyword">
-          </div>-->
-        </div>
-
-        <div class = "addKeyword">
-          <input class = "keywordInput" id="keywordInput">
-        </div>
-      </div>
-
-      <div class = "minimize">
-        <div class = "minicon">
-        </div>
+      <div class = "top">
+        <i class="fa fa-angle-double-up" aria-hidden="true" style="color:white;right:50%;"></i>
       </div>
 
     </div>
@@ -116,16 +104,16 @@ Sliders
 
 var minBubbles = 1;
 var maxBubbles = 250;
-var numBubbles = 1;
+var numBubbles = 30;
 
 var minTweets = 1;
-var maxTweets = 10000;
-var numTweets = 1;
+var maxTweets = 2000;
+var numTweets = 500;
 
 var minDelay = 10;
 var maxDelay = 10000;
-var numDelay = 60;
-var width = 150;
+var numDelay = 10;
+var width = 180;//padding 200- 10 - 10
 //Find out way to get width from css
 
 createSlider(".numTweetsSlider","Tweets",minTweets,maxTweets);
@@ -379,14 +367,29 @@ outputBar.addEventListener("keydown", function (e) {
 
     }
 });
+//fa fa-angle-double-up
+$(".fa.fa-angle-double-up").on("click",function(){
+  //alert("clicked");
 
-$(".keyword").on("click",function(){
-  alert("clicked");
-  var keyword = $(this).value;
-  customKeywordArray.remove(keyword);
-  $(this).remove();
-  update();
+  var controls = $(this).parents("top").siblings("below");
+  $(this).toggleClass("fa fa-angle-double-down");
+  $(this).toggleClass("fa fa-angle-double-up");
+
+  //$(this).switchClass(".fa.fa-angle-double-down",'i.fa.fa-angle-double-down');
+  $("div.below").slideToggle(1000);
+  //make it so that the controls minimize when clicked.
 });
+$(".fa.fa-angle-double-down").on("click",function(){
+  //alert("clicked");
+
+  var controls = $(this).parents("top").siblings("below");
+  $(this).toggleClass("fa fa-angle-double-up");
+  $(this).toggleClass("fa fa-angle-double-down");
+
+  $("div.below").slideToggle(1000);
+  //make it so that the controls minimize when clicked.
+});
+
 
 
 </script>
@@ -397,8 +400,8 @@ $(".keyword").on("click",function(){
 D3 DATA VISUALIZATION
 */
 
-var width = 2000,
-    height = 2000;
+var width = 1300,
+    height = 1300;
 
 var color = d3.scale.category20();
 var dampcolors = ['#fc0200', '#f90500', '#f70700', '#f40a00', '#f20c00', '#ef0f00', '#ed1100', '#ea1400', '#e81600', '#e51900', '#e21c00', '#e01e00', '#dd2100', '#db2300', '#d82600', '#d62800', '#d32b00', '#d12d00', '#ce3000', '#cc3300', '#c93500', '#c63800', '#c43a00', '#c13d00', '#bf3f00', '#bc4200', '#ba4400', '#b74700', '#b54900', '#b24c00', '#af4f00', '#ad5100', '#aa5400', '#a85600', '#a55900', '#a35b00', '#a05e00', '#9e6000', '#9b6300', '#996600', '#966800', '#936b00', '#916d00', '#8e7000', '#8c7200', '#897500', '#877700', '#847a00', '#827c00', '#7f7f00', '#7c8200', '#7a8400', '#778700', '#758900', '#728c00', '#708e00', '#6d9100', '#6b9300', '#689600', '#669900', '#639b00', '#609e00', '#5ea000', '#5ba300', '#59a500', '#56a800', '#54aa00', '#51ad00', '#4faf00', '#4cb200', '#49b500', '#47b700', '#44ba00', '#42bc00', '#3fbf00', '#3dc100', '#3ac400', '#38c600', '#35c900', '#33cc00', '#30ce00', '#2dd100', '#2bd300', '#28d600', '#26d800', '#23db00', '#21dd00', '#1ee000', '#1ce200', '#19e500', '#16e800', '#14ea00', '#11ed00', '#0fef00', '#0cf200', '#0af400', '#07f700', '#05f900', '#02fc00', '#00ff00'];

@@ -2,10 +2,28 @@
 div.sliders div input {
   width:100%;
 }
+div.minimizeTop {
+  float:right;
+  border-radius:0px 0px 1px 1px;
+  height:3px;
+  color:#AAAAAA;
+  background-color:#AAAAAA;
+  width:100%;
+}
+
+div.minimizeBottom {
+  float:bottom;
+  border-radius:1px 1px 0px 0px;
+  height:3px;
+  color:#AAAAAA;
+  background-color:#AAAAAA;
+  width:100%;
+}
 
 div.sliders {
   /*width:70%;*/
   padding:10px;
+  display:inline-block;
 }
 .numTweetsSlider {
   position: relative;
@@ -13,6 +31,7 @@ div.sliders {
   width:100%;
   margin-bottom:20px;
   height:20px;
+  color:black;
 }
 .numBubblesSlider {
   position: relative;
@@ -20,6 +39,7 @@ div.sliders {
   width:100%;
   margin-bottom:20px;
   height:20px;
+  color:black;
 }
 .delaySlider {
   position: relative;
@@ -27,6 +47,7 @@ div.sliders {
   width:100%;
   margin-bottom:20px;
   height:20px;
+  color:black;
 }
 .slider-tray {
   position: absolute;
