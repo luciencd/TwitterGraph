@@ -82,7 +82,7 @@ pre {
 
 div.middle {
 	text-align:center;
-	font-size:14pt;
+	font-size:10pt;
 	position:absolute;
 	margin-left: auto;
 	margin-right: auto;
@@ -101,7 +101,7 @@ input.twitterInput {
 	border: 0px solid black;
 	border-bottom: 2px solid black;
 	width:150px;
-	font-size:14pt;
+	font-size:10pt;
 	color: white;
 }
 

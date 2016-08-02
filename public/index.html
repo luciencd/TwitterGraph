@@ -51,6 +51,10 @@
   input.twitterInput {
     margin-bottom:10px;
   }*/
+  svg {
+    width:100%;
+    height:100%;
+  }
 
   </style>
 </head>
@@ -60,7 +64,7 @@
     <div class = "middle">
       <h3 class = "twitterTitle"><div style="color:white;">Twitter Sentiment</div></h1>
 
-      <input class = "twitterInput" id="maininput" value="IBM">
+      <input class = "twitterInput" id="maininput" value="">
 
     </div>
 
@@ -91,11 +95,13 @@
       </div>
 
     </div>
-    <div class = "network">
+    <div class = "network" id="network">
     </div>
+    <div class = "footer" style="color:white;"><span>Built by Lucien Christie-Dervaux lchrist@us.ibm.com</span></div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>
+
 /*
 
 Sliders
@@ -108,7 +114,7 @@ var numBubbles = 30;
 
 var minTweets = 1;
 var maxTweets = 2000;
-var numTweets = 500;
+var numTweets = 400;
 
 var minDelay = 10;
 var maxDelay = 10000;
@@ -203,7 +209,10 @@ User defined parts of the view, that users can choose
 */
 var customKeywordArray = [];
 //What's happening in ibm
-//customKeywordArray = ["ibm","ibmcloud","bluemix","ibmwatson","the weather company","ibmsports","bigdata","ibmanalytics","iot"]
+var defaultValue = "ibm";
+var userValue = "";
+var defaultcustomKeywordArray = ["ibm","ibmcloud","ibmbluemix","ibmmobile","agile","ibmwatson"]
+var initialState = true;
 //somers specifically?
 //customKeywordArray = ["ibm"]
 
@@ -252,20 +261,29 @@ update();
 //use numDelay!
 var myVar = setInterval(update, numDelay*1000);
 function getArrayTerm(){
-  return customKeywordArray[index];
+  return customKeywordArray[index%customKeywordArray.length];
 }
-
+function getDefaultArrayTerm(){
+  return defaultcustomKeywordArray[index%defaultcustomKeywordArray.length];
+}
 function incrementIndex(){
-  index = (index+1)%customKeywordArray.length;
+  index = (index+1);//%customKeywordArray.length;
 }
 
 function update(){
   var term = "";
-
-  if(customKeywordArray.length == 0){
+  if(initialState == true){
+     //If the user just started
+     term = getDefaultArrayTerm();
+     document.getElementById("maininput").value = term;
+  }else if(customKeywordArray.length == 0){
+    //If the user has defined a list himself in the control panel
      term = getTerm();
+     document.getElementById("maininput").value = term;
   }else{
+    //if user has done nothing.
      term = getArrayTerm();
+     document.getElementById("maininput").value = term;
   }
 
 
@@ -289,8 +307,11 @@ Use ajax function to get json data from python file.
 send in data relating to cutoff tweets (top n percent or how many tweets, later).
 */
 function getTweetsSentiment(callback){
+  //For online
+  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
 
-  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword="+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
+  //For local
+  //newurl = "http://0.0.0.0:8080/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
 
   document.getElementById("maininput").value = getTerm();
   //Get a cache going, that only updates after
@@ -312,9 +333,11 @@ call the Model for data belonging to that.
 inputBar.addEventListener("keydown", function (e) {
     if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
         var term = getTerm();
+        var userValue = term;
         getTweetsSentiment(function(d){
           generate(d);
         });
+        initialState = false;
     }
 });
 
@@ -363,33 +386,34 @@ outputBar.addEventListener("keydown", function (e) {
           getTweetsSentiment(function(d){
             generate(d);
           });
+          userValue = "";
         }
 
     }
 });
-//fa fa-angle-double-up
+
+
 $(".fa.fa-angle-double-up").on("click",function(){
-  //alert("clicked");
-
-  var controls = $(this).parents("top").siblings("below");
-  $(this).toggleClass("fa fa-angle-double-down");
-  $(this).toggleClass("fa fa-angle-double-up");
-
-  //$(this).switchClass(".fa.fa-angle-double-down",'i.fa.fa-angle-double-down');
-  $("div.below").slideToggle(1000);
+  slideUp();
   //make it so that the controls minimize when clicked.
 });
 $(".fa.fa-angle-double-down").on("click",function(){
-  //alert("clicked");
-
-  var controls = $(this).parents("top").siblings("below");
-  $(this).toggleClass("fa fa-angle-double-up");
-  $(this).toggleClass("fa fa-angle-double-down");
-
-  $("div.below").slideToggle(1000);
-  //make it so that the controls minimize when clicked.
+  slideDown();
 });
 
+function slideUp(){
+  //var controls = thing.parents("top").siblings("below");
+  $("fa fa-angle-double-up").toggleClass("fa fa-angle-double-down");
+  $("fa fa-angle-double-up").toggleClass("fa fa-angle-double-up");
+  $("div.below").slideToggle(1000);
+}
+function slideDown(){
+  //var controls = thing.parents("top").siblings("below");
+  $("fa fa-angle-double-down").toggleClass("fa fa-angle-double-up");
+  $("fa fa-angle-double-down").toggleClass("fa fa-angle-double-down");
+  $("div.below").slideToggle(1000);
+}
+slideDown();
 
 
 </script>
@@ -415,23 +439,24 @@ var greennosat = ['#e50000', '#e50500', '#e50a00', '#e51000', '#e51500', '#e51b0
 
 //Only display the top n% of tweet names, if you mouse over it should reveal.
 
+
+
+
 var force = d3.layout.force()
     .charge(-120)
     .linkDistance(140)
-    .size([width, height]);
+    .size([getScreenWidth(), getScreenHeight()]);
 
 
 
 var svg = d3.select(".network").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    /*.attr("width", width)
+    .attr("height", height)*/;
+
 
 function update() {
     svg.remove();
-    svg = d3.select(".network").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
+    svg = d3.select(".network").append("svg").attr("id","svg1");
 }
 function generate(graph) {
 
@@ -455,10 +480,19 @@ function generate(graph) {
   var minbubblesentiment = d3.min(graph.nodes,function(d) {return d.sentiment;});
   var averagebubblesentiment = d3.mean(graph.nodes,function(d) {return d.sentiment;});
 
+  var maxindex = 0;
+  for(var i = 0; i < graph.nodes.length; i++) {
+    if(graph.nodes[i].mass>graph.nodes[maxindex].mass){
+      maxindex = i;
+    }
+  }
 
-  var r = d3.scale.pow(1/4).domain([2,maxmass]).range([1, 40]);
-  var thickness = d3.scale.pow(1/4).domain([2,maxthick]).range([1, 30]);
+  var maxmassindex = d3.max(graph.nodes,function(d) {return d.mass;});
+
+  var r = d3.scale.pow(1).domain([2,maxmass]).range([1, 40]);
+  var thickness = d3.scale.pow(1).domain([2,maxthick]).range([1, 10]);
   var sentiment = d3.scale.quantize().domain([0,100]).range(greennosat);
+  var TextSize = d3.scale.linear().domain([0,20]).range([5,25]);
   /*
   alert(averagelinkssentiment);
   alert("minimumadj"+(minlinkssentiment-averagelinkssentiment+50));
@@ -472,10 +506,13 @@ function generate(graph) {
     .enter().append("line")
       .attr("class", "link")
       .style("stroke",function(d) { return sentiment(Math.max(1,Math.min(99,d.sentiment-averagebubblesentiment+50))); })
-      .style("stroke-width", function(d) { return thickness(d.value); });
+      .style("stroke-width", function(d) { return thickness(d.value); })
+      .style("opacity",0.34);
 
   var node = svg.selectAll(".node")
       .data(graph.nodes);
+
+
 
 
 
@@ -494,51 +531,58 @@ function generate(graph) {
   elemEnter.append("text")
       .attr("dx", function(d){return d.radius;})
       .attr("dy", function(d){return d.radius;})
-      .attr("r",function(d){return d.radius;})
+      //.attr("r",function(d){return d.radius;})
       .text(function(d) { return d.name; })
-      .style('fill', 'white');
+      .style('fill', 'white')
+      .style("font-size", function(d) {return TextSize(parseInt(d.weight)) + "px"; });
 
+  force.on("tick", function(d) {
 
-  force.on("tick", function(e) {
-    /*
-    var q = d3.geom.quadtree(node),
-        i = 0,
-        n = node.length;
-
-    while (++i < n) q.visit(collide(node[i]));
-    */
-    link.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-    node.attr("transform", function(d) { return "translate("+d.x+","+d.y+")"; });
-        //.attr("cy", function(d) { return d.y; });
-  });
-
-  function collide(node) {
-    var r = node.radius + 16,
-        nx1 = node.x - r,
-        nx2 = node.x + r,
-        ny1 = node.y - r,
-        ny2 = node.y + r;
-    return function(quad, x1, y1, x2, y2) {
-      if (quad.point && (quad.point !== node)) {
-        var x = node.x - quad.point.x,
-            y = node.y - quad.point.y,
-            l = Math.sqrt(x * x + y * y),
-            r = node.radius + quad.point.radius;
-        if (l < r) {
-          l = (l - r) / l * .5;
-          node.x -= x *= l;
-          node.y -= y *= l;
-          quad.point.x += x;
-          quad.point.y += y;
+      //   .attr("y", function(d) { return d.y});// = ; });
+      if(d.index==maxindex){
+            damper = 0.1;
+            d.x = d.x + (getWidth()/2 - d.x) * (damper + 0.71) * e.alpha;
+            d.y = d.y + (getHeight() - d.y) * (damper + 0.71) * e.alpha;
         }
-      }
-      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-    };
-  }
+      link.attr("x1", function(d) { return d.source.x; })
+         .attr("y1", function(d) { return d.source.y; })
+         .attr("x2", function(d) { return d.target.x; })
+         .attr("y2", function(d) { return d.target.y; });
+      node.attr("transform", function(d) { return "translate("+d.x+","+d.y+")"; });
+      //node.attr("transform", function(d) { return "translate("+Math.max(r(d.weight), Math.min(getWidth() - r(d.weight), d.x))+","+Math.max(r(d.weight), Math.min(getHeight() - r(d.weight), d.y))+")"; });
+      //node.attr("x", function(d) { return d.x;})// = ; })
+  });
+}
+function getWidth(){
+  return document.getElementById('svg1').getBoundingClientRect().width;
 }
 
+function getHeight(){
+  var height = document.getElementById('network').getBoundingClientRect().height;
+
+  if(height > 0){
+    return height;
+  }else{
+    return 400;
+  }
+}
+function getScreenWidth(){
+  //alert(document.getElementById('network').getBoundingClientRect().width);
+  var width = document.getElementById('network').getBoundingClientRect().width;
+
+  if(width > 0){
+    return width;
+  }else{
+    return 400;
+  }
+
+}
+
+function getScreenHeight(){
+  //alert(document.getElementById('network').getBoundingClientRect().height);
+  return 400;//document.getElementById('network').getBoundingClientRect().height;
+}
+</script>
+<script>
+//Figure out slider up down.
 </script>
