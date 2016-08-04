@@ -1,0 +1,12 @@
+div.footer {
+  color:white;
+  position:absolute;
+  bottom:0;
+  border-radius:0px 10px 0px 0px;
+  opacity:0.8;
+  background-color:#DDDDDD;
+  color:black;
+  font-family: 'Open Sans', sans-serif;
+  font-size:8pt;
+  padding:5px;
+}

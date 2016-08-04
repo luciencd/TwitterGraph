@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="stylesheets/buttons.css">
   <link rel="stylesheet" href="stylesheets/controls.css">
   <link rel="stylesheet" href="stylesheets/sliders.css">
+  <link rel="stylesheet" href="stylesheets/footer.css">
   <link rel="stylesheet" href="resources/font-awesome-4.6.3/css/font-awesome.min.css">
   <style>
   text {
@@ -60,7 +61,7 @@
 </head>
 
 <body>
-
+  <div class = "app" style = "height:100%;">
     <div class = "middle">
       <h3 class = "twitterTitle"><div style="color:white;">Twitter Sentiment</div></h1>
 
@@ -78,7 +79,7 @@
           </div>
           <div class = "numBubblesSlider">
           </div>
-          <div class = "delaySlider">
+          <div class = "delaySlider" id="delaySlider">
           </div>
         </div>
         <div class = "keywords">
@@ -96,8 +97,9 @@
 
     </div>
     <div class = "network" id="network">
-    </div>
-    <div class = "footer" style="color:white;"><span>Built by Lucien Christie-Dervaux lchrist@us.ibm.com</span></div>
+  </div>
+</div>
+<div class = "footer"><span>Built by Lucien Christie-Dervaux lchrist@us.ibm.com</span></div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>
@@ -122,13 +124,15 @@ var numDelay = 10;
 var width = 180;//padding 200- 10 - 10
 //Find out way to get width from css
 
+
+
 createSlider(".numTweetsSlider","Tweets",minTweets,maxTweets);
 createSlider(".numBubblesSlider","Bubbles",minBubbles,maxBubbles);
 createSlider(".delaySlider","Delay",minDelay,maxDelay);
 
 function createSlider(name,display,min,max){
   var legend = d3.format("0r");
-  var x = d3.scale.linear()
+  var x = d3.scale.log()
           .domain([min, max])
           .range([0, width])
           .clamp(true);
@@ -186,6 +190,9 @@ function createSlider(name,display,min,max){
       numBubbles = value;
     }else if(name == ".delaySlider"){
       numDelay = value;
+      //alert("brushed");
+      clearInterval(myVar);
+      myVar = setInterval(update, numDelay*1000);
     }
   }
 
@@ -202,7 +209,7 @@ var url = "https://cdeservice.mybluemix.net:443/api/v1/messages/search";
 var securl ="https://ed8cfdc5-f3d0-4c0e-a235-1abb6879ba51:f1EB5sW37M@cdeservice.mybluemix.net/api/v1/messages/search";
 var inputBar = document.getElementById("maininput");
 var outputlist = document.getElementById("outputlist");
-
+//var delayslider = document.getElementById();
 
 /*
 User defined parts of the view, that users can choose
@@ -259,7 +266,7 @@ update();
 
 //Setting interval so that we get an update from the model
 //use numDelay!
-var myVar = setInterval(update, numDelay*1000);
+
 function getArrayTerm(){
   return customKeywordArray[index%customKeywordArray.length];
 }
@@ -296,11 +303,6 @@ function update(){
   }else{
 
   }
-
-
-
-
-
 }
 /*
 Use ajax function to get json data from python file.
@@ -343,6 +345,7 @@ inputBar.addEventListener("keydown", function (e) {
 
 
 
+
 </script>
 
 
@@ -357,6 +360,7 @@ maintaining the array of keywords in the control panel.
 
 var outputBar = document.getElementById("keywordInput");
 var keywordArray = document.getElementById("keywordArray");
+var myVar = setInterval(update, numDelay*1000);
 //var customKeywordArray = [];
 
 function createKeyword(keyword){
