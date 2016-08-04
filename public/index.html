@@ -315,6 +315,8 @@ send in data relating to cutoff tweets (top n percent or how many tweets, later)
 function getTweetsSentiment(callback){
   //For online
 
+  //Ability to choose whether they want a hashtag, tweet, or just a token.
+
   newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
   console.log(newurl);
   //For local
@@ -451,13 +453,6 @@ var greennosat = ['#e50000', '#e50500', '#e50a00', '#e51000', '#e51500', '#e51b0
 
 
 
-var force = d3.layout.force()
-    .charge(-120)
-    .linkDistance(140)
-    .size([getScreenWidth(), getScreenHeight()]);
-
-
-
 var svg = d3.select(".network").append("svg")
     /*.attr("width", width)
     .attr("height", height)*/;
@@ -471,6 +466,19 @@ function update2() {
 function generate(graph) {
 
   jQuery.parseJSON( graph );
+  /*
+  Trying to make it so that thicker nodes attract more
+
+  */
+  var maxthick = d3.max(graph.links,function(d) {return d.value;});
+  var maxmass = d3.max(graph.nodes,function(d) {return d.mass;});
+  var linkAxis = d3.scale.pow(1).domain([0,maxthick]).range([100,200]);
+  var nodeAxis = d3.scale.pow(1).domain([0,maxmass]).range([130,150]);
+
+  var force = d3.layout.force()
+      .charge(-100)
+      .linkDistance(function(d) { return linkAxis(d.value); })
+      .size([getScreenWidth(), getScreenHeight()]);
 
   //alert(graph[0]);
   force
@@ -502,7 +510,7 @@ function generate(graph) {
   var r = d3.scale.pow(1).domain([2,maxmass]).range([1, 40]);
   var thickness = d3.scale.pow(1).domain([2,maxthick]).range([1, 10]);
   var sentiment = d3.scale.quantize().domain([0,100]).range(greennosat);
-  var TextSize = d3.scale.linear().domain([0,20]).range([5,25]);
+  var TextSize = d3.scale.linear().domain([0,20]).range([7,15]);
   /*
   alert(averagelinkssentiment);
   alert("minimumadj"+(minlinkssentiment-averagelinkssentiment+50));
