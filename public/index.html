@@ -189,9 +189,12 @@ function createSlider(name,display,min,max){
     }else if(name == ".numBubblesSlider"){
       numBubbles = value;
     }else if(name == ".delaySlider"){
+      console.log(value);
+      console.log(myVar);
       numDelay = value;
       //alert("brushed");
       clearInterval(myVar);
+
       myVar = setInterval(update, numDelay*1000);
     }
   }
@@ -278,6 +281,7 @@ function incrementIndex(){
 }
 
 function update(){
+  console.log("UPDATE");
   var term = "";
   if(initialState == true){
      //If the user just started
@@ -310,8 +314,9 @@ send in data relating to cutoff tweets (top n percent or how many tweets, later)
 */
 function getTweetsSentiment(callback){
   //For online
-  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
 
+  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
+  console.log(newurl);
   //For local
   //newurl = "http://0.0.0.0:8080/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
 
@@ -458,7 +463,8 @@ var svg = d3.select(".network").append("svg")
     .attr("height", height)*/;
 
 
-function update() {
+function update2() {
+    console.log("UPDATE()");
     svg.remove();
     svg = d3.select(".network").append("svg").attr("id","svg1");
 }
@@ -504,7 +510,7 @@ function generate(graph) {
   alert("average"+(averagelinkssentiment))
   alert(sentiment(10)+sentiment(20)+sentiment(30)+sentiment(40)+sentiment(50)+sentiment(60)+sentiment(70)+sentiment(80)+sentiment(90)+sentiment(100));
   */
-  update();
+  update2();
   var link = svg.selectAll(".link")
       .data(graph.links)
     .enter().append("line")
@@ -543,8 +549,7 @@ function generate(graph) {
   force.on("tick", function(d) {
 
       //   .attr("y", function(d) { return d.y});// = ; });
-      console.log(getWidth());
-      console.log(getHeight());
+
       if(d.index==maxindex){
             damper = 0.1;
 
