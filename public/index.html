@@ -128,7 +128,7 @@ var width = 180;//padding 200- 10 - 10
 
 createSlider(".numTweetsSlider","Tweets",minTweets,maxTweets);
 createSlider(".numBubblesSlider","Bubbles",minBubbles,maxBubbles);
-createSlider(".delaySlider","Delay",minDelay,maxDelay);
+createSlider(".delaySlider","Second Delay",minDelay,maxDelay);
 
 function createSlider(name,display,min,max){
   var legend = d3.format("0r");
@@ -543,9 +543,12 @@ function generate(graph) {
   force.on("tick", function(d) {
 
       //   .attr("y", function(d) { return d.y});// = ; });
+      console.log(getWidth());
+      console.log(getHeight());
       if(d.index==maxindex){
             damper = 0.1;
-            d.x = d.x + (getWidth()/2 - d.x) * (damper + 0.71) * e.alpha;
+
+            d.x = d.x + (getWidth() - d.x) * (damper + 0.71) * e.alpha;
             d.y = d.y + (getHeight() - d.y) * (damper + 0.71) * e.alpha;
         }
       link.attr("x1", function(d) { return d.source.x; })
@@ -562,7 +565,7 @@ function getWidth(){
 }
 
 function getHeight(){
-  var height = document.getElementById('network').getBoundingClientRect().height;
+  var height = document.getElementById('svg1').getBoundingClientRect().height;
 
   if(height > 0){
     return height;
@@ -584,7 +587,13 @@ function getScreenWidth(){
 
 function getScreenHeight(){
   //alert(document.getElementById('network').getBoundingClientRect().height);
-  return 400;//document.getElementById('network').getBoundingClientRect().height;
+  var height = document.getElementById('network').getBoundingClientRect().height;
+
+  if(height > 0){
+    return height;
+  }else{
+    return 400;
+  }//document.getElementById('network').getBoundingClientRect().height;
 }
 </script>
 <script>
