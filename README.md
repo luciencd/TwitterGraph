@@ -1,3 +1,8 @@
+Get to application if you are connected to w3ibm network here:
+
+http://twittergraph.w3ibm.mybluemix.net/
+
+
 # Node.js Starter Overview
 
 The Node.js Starter demonstrates a simple, reusable Node.js web application based on the Express framework.
