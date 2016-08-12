@@ -1,3 +1,11 @@
+Get to application if you are connected to w3ibm network here:
+
+http://twittergraph.w3ibm.mybluemix.net/
+
+Github repository of REST API powering the service is here:
+
+https://github.com/luciencd/RESTTwitter
+
 # Node.js Starter Overview
 
 The Node.js Starter demonstrates a simple, reusable Node.js web application based on the Express framework.
