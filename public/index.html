@@ -116,7 +116,7 @@ var numBubbles = 30;
 
 var minTweets = 1;
 var maxTweets = 2000;
-var numTweets = 2000;
+var numTweets = 1000;
 
 var minDelay = 10;
 var maxDelay = 10000;
@@ -317,10 +317,10 @@ function getTweetsSentiment(callback){
 
   //Ability to choose whether they want a hashtag, tweet, or just a token.
 
-  newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
+  //newurl = "http://resttwitter.w3ibm.mybluemix.net/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
 
   //For local
-  //newurl = "http://0.0.0.0:8080/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
+  newurl = "http://0.0.0.0:8080/analyze?keyword=%23"+getTerm()+"&numTweets="+getNumTweets()+"&numBubbles="+getNumBubbles()+"&main="+getMain()+"&nsfw="+getNsfw();
   console.log(newurl);
   document.getElementById("maininput").value = getTerm();
   //Get a cache going, that only updates after
@@ -471,9 +471,9 @@ function generate(graph) {
 
   */
   var maxthick = d3.max(graph.links,function(d) {return d.value;});
-  var maxmass = d3.max(graph.nodes,function(d) {return d.mass;});
-  var linkAxis = d3.scale.pow(1).domain([-maxthick,0]).range([60,120]);
-  var nodeAxis = d3.scale.pow(1).domain([0,maxmass]).range([130,150]);
+  var maxmass = d3.max(graph.nodes,function(d) {return d.value;});
+  var linkAxis = d3.scale.pow(1).domain([-maxthick,0]).range([100,150]);
+  var nodeAxis = d3.scale.pow(1).domain([0,maxmass]).range([100,150]);
 
   /*
   Not sure which force is better..
@@ -484,7 +484,8 @@ function generate(graph) {
 
   */
   var force = d3.layout.force()
-      .charge(-100)
+      //.charge(-100)//The bigger, the greater negative charge there should be
+      .charge(function(d) {return -nodeAxis(d.value);})
       .linkDistance(function(d) { return linkAxis(-d.value); })
       .size([getScreenWidth(), getScreenHeight()]);
 
@@ -495,7 +496,7 @@ function generate(graph) {
       .start();
 
   /*normalization factors*/
-  var maxmass = d3.max(graph.nodes,function(d) {return d.mass;});
+  var maxmass = d3.max(graph.nodes,function(d) {return d.value;});
   var maxthick = d3.max(graph.links,function(d) {return d.value;});
   //alert(maxmass+" "+maxthick);
   var maxlinkssentiment = d3.max(graph.links,function(d) {return d.sentiment;});
@@ -508,17 +509,20 @@ function generate(graph) {
 
   var maxindex = 0;
   for(var i = 0; i < graph.nodes.length; i++) {
-    if(graph.nodes[i].mass>graph.nodes[maxindex].mass){
+    //alert("mass");
+    if(graph.nodes[i].value>graph.nodes[maxindex].value){
       maxindex = i;
+      //alert(graph.nodes[i].value);
     }
   }
 
-  var maxmassindex = d3.max(graph.nodes,function(d) {return d.mass;});
+  var maxmassindex = d3.max(graph.nodes,function(d) {return d.value;});
 
-  var r = d3.scale.pow(1).domain([2,maxmass]).range([1, 40]);
-  var thickness = d3.scale.pow(1).domain([2,maxthick]).range([1, 10]);
+  var r = d3.scale.pow(2).domain([1,maxmass]).range([1, 20]);
+  var thickness = d3.scale.pow(2).domain([1,maxthick]).range([1, 10]);
   var sentiment = d3.scale.quantize().domain([0,100]).range(greennosat);
-  var TextSize = d3.scale.linear().domain([0,20]).range([7,15]);
+  var TextSize = d3.scale.pow(2).domain([1,maxmass]).range([4,20]);
+  var opacity = d3.scale.linear().domain([1,maxthick]).range([0.1,1]);
   /*
   alert(averagelinkssentiment);
   alert("minimumadj"+(minlinkssentiment-averagelinkssentiment+50));
@@ -534,7 +538,7 @@ function generate(graph) {
       //.style("stroke",function(d) { return sentiment(Math.max(1,Math.min(99,d.sentiment-averagebubblesentiment+50))); })
       .style("stroke",function(d) { return sentiment(d.sentiment); })
       .style("stroke-width", function(d) { return thickness(d.value); })
-      .style("opacity",0.34);
+      .style("opacity",function(d) {alert(d.value+" "+opacity(d.value)); return opacity(d.value); });
 
   var node = svg.selectAll(".node")
       .data(graph.nodes);
@@ -549,7 +553,7 @@ function generate(graph) {
 
   var circle = elemEnter.append("circle")
       .attr("class", "node")
-      .attr("r", function(d) { return r(d.weight); })//find how to normalize
+      .attr("r", function(d) { return r(d.value); })//find how to normalize
       .style("stroke",function(d) { return sentiment(d.sentiment); })
       .style("fill",function(d) { return sentiment(d.sentiment); })
       //.attr("stroke",function(d) { /*alert(Math.max(0,Math.min(99,d.sentiment-averagebubblesentiment+50)));*/return sentiment(Math.max(1,Math.min(99,d.sentiment-averagebubblesentiment+50))); })
@@ -558,12 +562,13 @@ function generate(graph) {
       .call(force.drag);
 
   elemEnter.append("text")
-      .attr("dx", function(d){return d.radius;})
-      .attr("dy", function(d){return d.radius;})
+      /*.attr("dx", function(d){return r(d.value);})*/
+      .attr("dy", function(d){return TextSize(d.value)/4;})
+      .attr("text-anchor", "middle")
       //.attr("r",function(d){return d.radius;})
       .text(function(d) { return d.name; })
       .style('fill', 'white')
-      .style("font-size", function(d) {return TextSize(parseInt(d.weight)) + "px"; });
+      .style("font-size", function(d) {return TextSize(d.value) + "px"; });
 
   force.on("tick", function(d) {
 
